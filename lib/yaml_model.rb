@@ -79,9 +79,8 @@ class YamlModel
   def save
     return false unless valid?
     records = self.class.read_records
-    next_id = records.keys.max.to_i + 1
-    self.id ||= next_id
-    records[self.id] = self
+    self.id ||= records.keys.max.to_i + 1
+    records[self.id.to_i] = self
     File.open(filename, "w") do |fh|
       begin
         @new_record = false
