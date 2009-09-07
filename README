@@ -1,0 +1,46 @@
+YamlModel -- an experimental YAML-based ORM for Rails 3.
+David A. Black
+September 7, 2009
+
+YamlModel is an experiment bed for me to learn more about ActiveModel and ORM
+plugging in Rails 3. It uses ActiveModel, and it implements some CRUD stuff. 
+
+Install this git repo as a plugin. Then, if you create a model like this:
+
+  class Person < YamlModel
+    attr_accessor :name
+    validates_presence_of :name
+  end
+
+then when you start doing stuff it will create a file in db/ called people.yml,
+and you'll be able to do things like:
+
+Loading development environment (Rails 3.0.pre)
+>> person = Person.new
+=> #<Person:0x2230148 @new_record=true>
+>> person.save
+=> false
+>> person.errors
+=> {:name=>["can't be blank"]}
+>> person.name = "David"
+=> "David"
+>> person.save
+=> true
+>> person.update_attributes(:name => "David Black")
+=> true
+>> n = person.id
+=> 2
+>> person = nil
+=> nil
+>> person = Person.find(n)
+=> #<Person:0x220af4c @new_record=false, @errors={}, @name="David Black", @id=2>
+>> person.name
+=> "David Black"
+
+
+Also, in your controller you can do the usual create, update_attributes, new,
+and save. 
+
+It's very brute-force, in the sense that it keeps reading the whole YAML file
+in... not sure how to optimize that away, but I'm not too worried about it right
+now. I mainly want the experience of getting the API in place. 
