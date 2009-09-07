@@ -37,6 +37,17 @@ class YMTest < Test::Unit::TestCase
     person = Person.new
     assert(!person.valid?)
     assert(!person.save)
+    assert(person.new_record?)
+  end
+
+  def test_save_valid_then_invalid_record
+    person = Person.new(:name => "David")
+    assert(person.new_record?)
+    person.save
+    assert(!person.new_record?)
+    person.name = ""
+    assert(!person.save)
+    assert(!person.new_record?)
   end
 
   def test_create_valid_record
@@ -77,6 +88,12 @@ class YMTest < Test::Unit::TestCase
     assert(File.exists?(Person.filename))
   end
 
+  def test_finding_multiple_records
+    a = Person.create(:name => "David")
+    b = Person.create(:name => "Joe")
+    records = Person.find([a.id, b.id])
+    assert_equal(2, records.size)
+  end
   def teardown
     FileUtils.rm(Person.filename) rescue nil
   end

@@ -18,7 +18,9 @@ class YamlModel
 
   def self.inherited(c)
     def c.filename
-      @filename ||= RAILS_ROOT + "/db/" + name.underscore.pluralize + ".yml"
+      @filename ||= File.join(
+        RAILS_ROOT, "tmp", name.underscore.pluralize + ".yml"
+      )
     end
   end
 
@@ -44,24 +46,27 @@ class YamlModel
     record
   end
 
-  def update_attributes(attributes = {})
-    attributes.each do |attr, val|
-      self.send("#{attr}=", val)
-    end
-    save
+  def self.all_records
+    load_records unless @records
+    @records
   end
 
-  def self.read_records
+  def self.load_records
     FileUtils.touch(filename) unless test(?f, filename)
-    records = YAML.load(File.read(filename)) || {}
-    records.each do |id,r|
+    @records = YAML.load(File.read(filename)) || {}
+    @records.each do |id,r|
       r.errors.instance_variable_set("@base", r)
     end
-    records
+    @records
   end
 
-  def self.find(id)
-    read_records[id.to_i]
+  def self.find(*ids)
+    ids.flatten!
+    if ids.size == 1
+      all_records[ids[0].to_i]
+    else
+      all_records.values_at(*ids.map(&:to_i))
+    end
   end
 
   def initialize
@@ -76,20 +81,38 @@ class YamlModel
     !!@new_record
   end
 
+  def update_attributes(attributes = {})
+    attributes.each do |attr, val|
+      self.send("#{attr}=", val)
+    end
+    save
+  end
+
+  def self.dump_records
+    File.open(filename, "w") do |fh|
+      fh.print(all_records.to_yaml)
+    end
+  end
+ 
   def save
     return false unless valid?
-    records = self.class.read_records
+    records = self.class.all_records
     self.id ||= records.keys.max.to_i + 1
     records[self.id.to_i] = self
-    File.open(filename, "w") do |fh|
-      begin
-        @new_record = false
-        fh.print(records.to_yaml)
-      rescue
-        @new_record = true
-        fh.close
-      end
+    old_new_record = @new_record
+    @new_record = false
+    begin
+      self.class.dump_records
+    rescue
+      @new_record = old_new_record
+      false
+    else
+      true
     end
-    true
+  end
+
+  def self.delete(id)
+    @records.delete(id.to_i)
+    dump_records
   end
 end
