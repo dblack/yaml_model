@@ -1,8 +1,8 @@
-YamlModel -- an experimental YAML-based ORM for Rails 3.
+YamlModel -- an experimental YAML-based OYM for Rails 3.
 David A. Black
 September 7, 2009
 
-YamlModel is an experiment bed for me to learn more about ActiveModel and ORM
+YamlModel is an experiment bed for me to learn more about ActiveModel and O*M
 plugging in Rails 3. It uses ActiveModel, and it implements some CRUD stuff. 
 
 Install this git repo as a plugin. Then, if you create a model like this:
