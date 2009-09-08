@@ -108,7 +108,31 @@ class YMTest < Test::Unit::TestCase
       assert(!person.save)
     end
   end
+
+  def test_before_save
+    Person.class_eval { before_save { self.name = self.name.upcase } }
+    person = Person.new(:name => "David")
+    person.save
+    person = Person.find(person.id)
+    begin
+    assert_equal("DAVID", person.name)
+    ensure
+    Person.instance_variable_set("@before_save_queue", [])
+    end
+  end
   
+  def test_after_save
+    Person.class_eval { after_save { self.name = self.name.reverse } }
+    person = Person.new(:name => "David")
+    person.save
+    person = Person.find(person.id)
+    begin
+      assert_equal("divaD", person.name)
+    ensure
+    Person.instance_variable_set("@after_save_queue", [])
+    end
+  end
+
   def teardown
     FileUtils.rm(Person.filename) rescue nil
   end

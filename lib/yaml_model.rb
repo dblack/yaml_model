@@ -5,6 +5,22 @@ class YamlModel
 
   attr_accessor :id
 
+  def self.before_save_queue
+    @before_save_queue ||= []
+  end
+
+  def self.after_save_queue
+    @after_save_queue ||= []
+  end
+
+  def self.before_save(&block)
+    before_save_queue << block
+  end
+
+  def self.after_save(&block)
+    after_save_queue << block
+  end
+
   def self.model_name
     return @mn if @mn
     @mn = "Person"
@@ -48,15 +64,6 @@ class YamlModel
     @records
   end
 
-  def self.load_records
-    FileUtils.touch(filename) unless test(?f, filename)
-    @records = YAML.load(File.read(filename)) || {}
-    @records.each_value do |record|
-      record.errors.instance_variable_set("@base", record)
-    end
-    @records
-  end
-
   def self.find(*ids)
     ids.flatten!
     if ids.size == 1
@@ -64,6 +71,15 @@ class YamlModel
     else
       all_records.values_at(*ids.map(&:to_i))
     end
+  end
+
+  def self.load_records
+    FileUtils.touch(filename) unless test(?f, filename)
+    @records = YAML.load(File.read(filename)) || {}
+    @records.each_value do |record|
+      record.errors.instance_variable_set("@base", record)
+    end
+    @records
   end
 
   def self.dump_records
@@ -114,12 +130,19 @@ class YamlModel
 
     @new_record = false
 
+    self.class.before_save_queue.each do |block|
+      instance_eval(&block)
+    end
+
     begin
       self.class.dump_records
     rescue
       self.id, @new_record = old_state
       false
     else
+    self.class.after_save_queue.each do |block|
+      instance_eval(&block)
+    end
       true
     end
   end
