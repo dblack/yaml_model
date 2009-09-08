@@ -94,8 +94,38 @@ class YMTest < Test::Unit::TestCase
     records = Person.find([a.id, b.id])
     assert_equal(2, records.size)
   end
+
+  def test_dump_with_io_error
+    Person.load_records
+    with_new_filename("/asdfas/asdfasd/fasdfasd") do
+      assert_raises(Errno::ENOENT) { Person.dump_records }
+    end
+  end
+
+  def test_save_with_io_error_doesnt_work
+    person = Person.new(:name => "David")
+    with_new_filename("/asdfas/asdfasd/fasdfasd") do
+      assert(!person.save)
+    end
+  end
+  
   def teardown
     FileUtils.rm(Person.filename) rescue nil
+  end
+
+  def with_new_filename(fn)
+    old_fn = Person.filename
+    sc = (class << Person; self; end)
+    sc.class_eval do
+      define_method(:filename) { fn }
+    end
+    begin
+      yield
+    ensure
+      sc.class_eval do
+        define_method(:filename) { old_fn }
+      end
+    end
   end
 end
 
