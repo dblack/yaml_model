@@ -93,7 +93,7 @@ class YamlModel
   end
 
   def new_record?
-    !!@new_record
+    @new_record
   end
 
   def update_attributes(attributes = {})
