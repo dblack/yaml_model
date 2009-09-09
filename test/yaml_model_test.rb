@@ -115,9 +115,9 @@ class YMTest < Test::Unit::TestCase
     person.save
     person = Person.find(person.id)
     begin
-    assert_equal("DAVID", person.name)
+      assert_equal("DAVID", person.name)
     ensure
-    Person.instance_variable_set("@before_save_queue", [])
+      Person.instance_variable_set("@before_save_queue", [])
     end
   end
   
@@ -129,7 +129,7 @@ class YMTest < Test::Unit::TestCase
     begin
       assert_equal("divaD", person.name)
     ensure
-    Person.instance_variable_set("@after_save_queue", [])
+      Person.instance_variable_set("@after_save_queue", [])
     end
   end
 
