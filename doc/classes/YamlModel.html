@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: YamlModel</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">YamlModel</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/lib/yaml_model_rb.html">
+                lib/yaml_model.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+<a href="YamlModel.html">YamlModel</a> &#8212; parent class for the
+&quot;OYM&quot; classes
+</p>
+<p>
+This class implements basic CRUD operations, using a YAML file for storage.
+It tries to imitate ActiveRecord, at least up to a point, for easy use in
+Rails projects. (Not that it&#8216;s a production tool; it&#8216;s more of
+a learning tool, for me.)
+</p>
+<p>
+<a href="YamlModel.html">YamlModel</a> includes ActiveModel::Validations,
+so you can do validations on your objects. Also, it implements a
+rudimentary before_save and after_save feature.
+</p>
+<p>
+Here&#8216;s a sample subclass:
+</p>
+<pre>
+ class Person &lt; YamlModel
+   attr_accessor :name
+   validates_presence_of :name
+   before_save { self.name = self.name.upcase }     # or whatever
+   after_save  { &quot;do some logging or whatever here&quot; }
+ end
+</pre>
+<p>
+Given this class, you can do things like:
+</p>
+<pre>
+  person = Person.new
+  person.save              =&gt; false (not valid)
+  person.name = &quot;David&quot;
+  person.save              =&gt; true
+  person.name              =&gt; DAVID
+</pre>
+<p>
+The class can also do simple <a href="YamlModel.html#M000006">find</a>
+operations:
+</p>
+<pre>
+  Person.find(1)           =&gt; finds by id
+  Person.find([1,2,3])     =&gt; an array of records
+</pre>
+<p>
+Error handling and reporting are pretty barebones at the moment.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000007">all_records</a>&nbsp;&nbsp;
+      <a href="#M000004">create</a>&nbsp;&nbsp;
+      <a href="#M000005">delete</a>&nbsp;&nbsp;
+      <a href="#M000009">dump_records</a>&nbsp;&nbsp;
+      <a href="#M000014">filename</a>&nbsp;&nbsp;
+      <a href="#M000006">find</a>&nbsp;&nbsp;
+      <a href="#M000002">inherited</a>&nbsp;&nbsp;
+      <a href="#M000008">load_records</a>&nbsp;&nbsp;
+      <a href="#M000001">model_name</a>&nbsp;&nbsp;
+      <a href="#M000003">new</a>&nbsp;&nbsp;
+      <a href="#M000011">new</a>&nbsp;&nbsp;
+      <a href="#M000015">new_record?</a>&nbsp;&nbsp;
+      <a href="#M000010">next_id</a>&nbsp;&nbsp;
+      <a href="#M000017">save</a>&nbsp;&nbsp;
+      <a href="#M000013">to_model</a>&nbsp;&nbsp;
+      <a href="#M000012">to_param</a>&nbsp;&nbsp;
+      <a href="#M000016">update_attributes</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+    <div id="includes">
+      <h3 class="section-bar">Included Modules</h3>
+
+      <div id="includes-list">
+        <span class="include-name">ActiveModel::Validations</span>
+      </div>
+    </div>
+
+    <div id="section">
+
+    <div id="class-list">
+      <h3 class="section-bar">Classes and Modules</h3>
+
+      Module <a href="YamlModel/Queue.html" class="link">YamlModel::Queue</a><br />
+
+    </div>
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">id</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000007.html');return false;">
+          <span class="method-name">all_records</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000007">all_records</a> &#8212; load from file if
+needed and return all records
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000004.html');return false;">
+          <span class="method-name">create</span><span class="method-args">(attributes = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000004">create</a> &#8212; <a
+href="YamlModel.html#M000003">new</a> + <a
+href="YamlModel.html#M000017">save</a>
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000005.html');return false;">
+          <span class="method-name">delete</span><span class="method-args">(id)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000005">delete</a> &#8212; <a
+href="YamlModel.html#M000005">delete</a> a record from memory and persist
+the remaining records
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000009" class="method-detail">
+        <a name="M000009"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000009.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000009.html');return false;">
+          <span class="method-name">dump_records</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000009">dump_records</a> &#8212; dump existing
+records to file
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000006.html');return false;">
+          <span class="method-name">find</span><span class="method-args">(*ids)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000006">find</a> &#8212; takes one or more id
+numbers
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000002.html');return false;">
+          <span class="method-name">inherited</span><span class="method-args">(c)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+On inheritance, <a href="YamlModel.html#M000004">create</a> the canonical
+<a href="YamlModel.html#M000014">filename</a> for this class&#8216;s YAML
+records.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000008.html');return false;">
+          <span class="method-name">load_records</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000008">load_records</a> &#8212; load all records
+from file
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000001.html');return false;">
+          <span class="method-name">model_name</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000001">model_name</a>: required by the
+ActiveModel plugin API
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000003.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(attributes = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000003">new</a> &#8212; initialize <a
+href="YamlModel.html#M000003">new</a> object with given attributes
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000011" class="method-detail">
+        <a name="M000011"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000011.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000011.html');return false;">
+          <span class="method-name">new</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Set @new_record to true for, well, <a href="YamlModel.html#M000003">new</a>
+records. (I really do think there&#8216;s such a thing as too much
+documentation.&#8230;)
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000010.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000010.html');return false;">
+          <span class="method-name">next_id</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="YamlModel.html#M000010">next_id</a> &#8212; generate the next id
+number
+</p>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000014.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000014.html');return false;">
+          <span class="method-name">filename</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Instance-level access to the storage <a
+href="YamlModel.html#M000014">filename</a>
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000015.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000015.html');return false;">
+          <span class="method-name">new_record?</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+From the ActiveModel API
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000017.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000017.html');return false;">
+          <span class="method-name">save</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Save the record. A bit spaghetti-ish, but not disastrously so.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000013.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000013.html');return false;">
+          <span class="method-name">to_model</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+From the ActiveModel API
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000012.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000012.html');return false;">
+          <span class="method-name">to_param</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+For ActionPack&#8216;s benefit
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+          <a href="YamlModel.src/M000016.html" target="Code" class="method-signature"
+            onclick="popupCode('YamlModel.src/M000016.html');return false;">
+          <span class="method-name">update_attributes</span><span class="method-args">(attributes = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Update attributes according to given hash and <a
+href="YamlModel.html#M000017">save</a> the record
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
