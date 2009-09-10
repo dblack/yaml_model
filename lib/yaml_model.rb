@@ -110,11 +110,7 @@ class YamlModel
 
 # new -- initialize new object with given attributes
   def self.new(attributes = {})
-    s = super()
-    attributes.each do |attr, val|
-      s.send("#{attr}=", val)
-    end
-    s
+    super
   end
 
 # create -- new + save
@@ -168,9 +164,11 @@ class YamlModel
     all_records.keys.max.to_i + 1
   end
 
-# Set @new_record to true for, well, new records. (I really do think there's
-# such a thing as too much documentation....)
-  def initialize
+# Initialize object (as you might have guessed)
+  def initialize(attributes = {})
+    attributes.each do |attr, val|
+      send("#{attr}=", val)
+    end
     @new_record = true
   end
 
