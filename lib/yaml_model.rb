@@ -1,3 +1,4 @@
+#require 'ruby-debug'
 # YamlModel -- an experimental object-YAML mapper for Rails (mainly)
 #
 # David A. Black
@@ -7,7 +8,7 @@
 # other aspects of Rails 3. See the YamlModel class for main documentation. I'll
 # also leave the old README lying around for now.
 
-require 'activemodel'
+require 'active_model'
 
 # YamlModel -- parent class for the "OYM" classes
 #
@@ -87,23 +88,11 @@ class YamlModel
   qcreate :before_save
   qcreate :after_save
 
-# model_name: required by the ActiveModel plugin API
-  def self.model_name
-    return @mn if @mn
-    @mn = "Person"
-    def @mn.singular; "person"; end
-    def @mn.plural; "people"; end
-    def @mn.member; "person"; end
-    def @mn.collection; "people"; end
-    def @mn.partial_path; "people/person"; end
-    @mn
-  end
-
 # On inheritance, create the canonical filename for this class's YAML records.
   def self.inherited(c)
     def c.filename
       @filename ||= File.join(
-        RAILS_ROOT, "tmp", name.underscore.pluralize + ".yml"
+        RAILS_ROOT, "db", name.underscore.pluralize + ".yml"
       )
     end
   end
@@ -138,24 +127,23 @@ class YamlModel
 
 # all_records -- load from file if needed and return all records
   def self.all_records
-    load_records unless @records
-    @records
+    @records ||= load_records
   end
 
 # load_records -- load all records from file
   def self.load_records
     FileUtils.touch(filename) unless test(?f, filename)
-    @records = YAML.load(File.read(filename)) || {}
-    @records.each_value do |record|
-      record.errors.instance_variable_set("@base", record)
+    records = YAML.load(File.read(filename)) || {}
+    records.each do |id, record|
+      record.instance_eval { @errors = ActiveModel::Errors.new(self) }
     end
-    @records
+    records
   end
 
 # dump_records -- dump existing records to file
   def self.dump_records
     File.open(filename, "w") do |fh|
-      fh.print(all_records.to_yaml)
+      fh.print(@records.to_yaml)
     end
   end
 
@@ -169,6 +157,7 @@ class YamlModel
     attributes.each do |attr, val|
       send("#{attr}=", val)
     end
+    @errors = ActiveModel::Errors.new(self)
     @new_record = true
   end
 
@@ -222,6 +211,7 @@ class YamlModel
       self.id, @new_record = old_state
       false
     else
+
     self.class.after_save_queue.each do |block|
       instance_eval(&block)
     end
